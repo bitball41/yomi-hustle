@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='' xml:lang=''>
 <head>
-	<base href="https://cdn.jsdelivr.net/gh/web-ports/yomi-hustle@main/">
+	<script>
+		// Standalone launchers need absolute assets; hosted checkouts use sibling files.
+		if (['file:', 'blob:', 'about:'].includes(location.protocol) || /\/file\/?$/.test(location.pathname)) {
+			var assetBase = document.createElement('base');
+			assetBase.href = 'https://cdn.jsdelivr.net/gh/bitball41/yomi-hustle@main/';
+			document.head.appendChild(assetBase);
+		}
+	</script>
 	<meta charset='utf-8' />
 	<meta name='viewport' content='width=device-width, user-scalable=no' />
 	<title>Your Only Move Is HUSTLE</title>
@@ -138,9 +145,10 @@
 	</div>
 
 	<script type='text/javascript' src='index.js'></script>
+	<script type='text/javascript' src='multiplayer/pack-loader.js'></script>
 	<script type='text/javascript'>//<![CDATA[
 
-		const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":18868128,"index.wasm":17862218},"focusCanvas":true,"gdnativeLibs":[]};
+		const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":18868128,"multiplayer/patch.pck":61056,"index.wasm":17862218},"focusCanvas":true,"gdnativeLibs":[]};
 		var engine = new Engine(GODOT_CONFIG);
 
 		(function() {
@@ -222,7 +230,7 @@
 				displayFailureNotice('WebGL not available');
 			} else {
 				setStatusMode('indeterminate');
-				engine.startGame({
+				YomiPackPatch.startGame(engine, {
 					'onProgress': function (current, total) {
 						if (total > 0) {
 							statusProgressInner.style.width = current/total * 100 + '%';
@@ -237,7 +245,7 @@
 							setStatusMode('indeterminate');
 						}
 					},
-				}).then(() => {
+				}, GODOT_CONFIG).then(() => {
 					setStatusMode('hidden');
 					initializing = false;
 				}, displayFailureNotice);
@@ -246,4 +254,3 @@
 	//]]></script>
 </body>
 </html>
-
